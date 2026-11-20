@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.demo.smarttask.ui.theme.SmartTaskTheme
 
 @Composable
-fun SmartTaskHeader(onSyncClicked: () -> Unit) {
+fun SmartTaskHeader(onSyncClicked: () -> Unit, onNotificationClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,6 +45,14 @@ fun SmartTaskHeader(onSyncClicked: () -> Unit) {
             )
         }
 
+        Button(
+            onClick = {
+                onNotificationClicked()
+            }
+        ) {
+            Text("Test Notification")
+        }
+
     }
 }
 
@@ -53,7 +61,8 @@ fun SmartTaskHeader(onSyncClicked: () -> Unit) {
 fun PreviewSmartTaskHeader() {
     SmartTaskTheme {
         SmartTaskHeader(
-            onSyncClicked = {}
+            onSyncClicked = {},
+            onNotificationClicked = {}
         )
     }
 }

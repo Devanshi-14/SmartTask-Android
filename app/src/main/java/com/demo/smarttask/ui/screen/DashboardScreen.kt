@@ -1,6 +1,5 @@
 package com.demo.smarttask.ui.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,25 +29,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.demo.smarttask.data.Task
 import com.demo.smarttask.data.TaskPriority
-import com.demo.smarttask.data.local.TaskDao
-import com.demo.smarttask.data.local.TaskEntity
-import com.demo.smarttask.repository.TaskRepository
+import com.demo.smarttask.notification.NotificationHelper
 import com.demo.smarttask.ui.components.SearchTab
 import com.demo.smarttask.ui.components.SmartTaskHeader
 import com.demo.smarttask.ui.components.TaskItem
 import com.demo.smarttask.ui.components.TaskSummaryCard
-import com.demo.smarttask.ui.theme.SmartTaskTheme
 import com.demo.smarttask.viewmodel.TaskViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun DashBoardScreen(
@@ -62,6 +56,7 @@ fun DashBoardScreen(
     val syncLoading by taskViewModel.syncLoading.collectAsState()
     val syncMessage by taskViewModel.syncMessage.collectAsState()
     val syncError by taskViewModel.syncError.collectAsState()
+    val context = LocalContext.current
 
     var showDeleteDialog by rememberSaveable {
         mutableStateOf(false)
@@ -96,7 +91,6 @@ fun DashBoardScreen(
                 searchQuery,
                 ignoreCase = true
             )
-
             val matchFilter = when (selectedFilter) {
                 "Pending" -> !task.isCompleted
                 "Completed" -> task.isCompleted
@@ -128,8 +122,12 @@ fun DashBoardScreen(
             onSyncClicked = {
                 taskViewModel.fetchTodos()
                 taskViewModel.syncPendingTasks()
+            },
+            onNotificationClicked = {
+                NotificationHelper.showTestNotification(context)
             }
         )
+
         if(apiLoading){
             CircularProgressIndicator()
         }
