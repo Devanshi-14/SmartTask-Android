@@ -1,6 +1,7 @@
 package com.demo.smarttask
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,12 @@ import com.demo.smarttask.ui.screen.DashBoardScreen
 import com.demo.smarttask.ui.screen.TaskDetailsScreen
 import com.demo.smarttask.viewmodel.TaskViewModel
 import com.demo.smarttask.viewmodel.TaskViewModelFactory
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.*
+import com.demo.smarttask.notification.NotificationHelper
 
 @Composable
 fun AppNavigation() {
@@ -28,6 +35,22 @@ fun AppNavigation() {
 
     val context = LocalContext.current.applicationContext
 
+    LaunchedEffect(Unit) {
+        NotificationHelper.createNotificationChannel(context)
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+        }
+
+        LaunchedEffect(Unit) {
+            permissionLauncher.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+    }
+
     val database = remember(context) {
         DatabaseProvider.getDatabase(context)
     }
@@ -35,7 +58,7 @@ fun AppNavigation() {
         TodoRemoteDataSource(RetrofitClient.todoApiService)
     }
     val repository = remember(database) {
-        TaskRepository(taskDao = database.taskDao(), taskRemoteDataSource = taskRemoteDataSource )
+        TaskRepository(taskDao = database.taskDao(), taskRemoteDataSource = taskRemoteDataSource)
     }
 
     val factory = remember(repository) {
