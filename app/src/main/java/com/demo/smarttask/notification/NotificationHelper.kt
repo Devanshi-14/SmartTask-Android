@@ -63,4 +63,38 @@ object NotificationHelper {
 
         notificationManager.notify(1, notification)
     }
+    fun showTaskReminder(
+        context: Context,
+        taskTitle: String,
+        notificationId: Int
+    ) {
+        val intent = Intent(context, MainActivity::class.java)
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or
+                    PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(
+            context,
+            CHANNEL_ID
+        )
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle("Task Reminder")
+            .setContentText(taskTitle)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+
+        val notificationManager =
+            context.getSystemService(
+                Context.NOTIFICATION_SERVICE
+            ) as NotificationManager
+
+        notificationManager.notify(notificationId, notification)
+    }
 }

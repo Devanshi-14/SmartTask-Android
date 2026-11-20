@@ -17,10 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.demo.smarttask.taskreminder.TaskReminderScheduler
 import com.demo.smarttask.ui.theme.SmartTaskTheme
 
 @Composable
-fun SmartTaskHeader(onSyncClicked: () -> Unit, onNotificationClicked: () -> Unit) {
+fun SmartTaskHeader(onSyncClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,14 +46,6 @@ fun SmartTaskHeader(onSyncClicked: () -> Unit, onNotificationClicked: () -> Unit
             )
         }
 
-        Button(
-            onClick = {
-                onNotificationClicked()
-            }
-        ) {
-            Text("Test Notification")
-        }
-
     }
 }
 
@@ -61,8 +54,7 @@ fun SmartTaskHeader(onSyncClicked: () -> Unit, onNotificationClicked: () -> Unit
 fun PreviewSmartTaskHeader() {
     SmartTaskTheme {
         SmartTaskHeader(
-            onSyncClicked = {},
-            onNotificationClicked = {}
+            onSyncClicked = {}
         )
     }
 }

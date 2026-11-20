@@ -76,7 +76,7 @@ class TaskRepository(
         description: String,
         priority: TaskPriority,
         dueDate: LocalDate?
-    ) {
+    ): Long?{
         val newTitle = title.trim()
         val newDescription = description.trim()
 
@@ -90,8 +90,9 @@ class TaskRepository(
                 dueDate = dueDate
             )
 
-            taskDao.insertTask(task.toEntity())
+            return taskDao.insertTask(task.toEntity())
         }
+        return null
     }
 
     // update task completion

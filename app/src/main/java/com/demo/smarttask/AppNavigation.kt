@@ -62,7 +62,7 @@ fun AppNavigation() {
     }
 
     val factory = remember(repository) {
-        TaskViewModelFactory(repository)
+        TaskViewModelFactory(context,repository)
     }
 
     val taskViewModel: TaskViewModel = viewModel(

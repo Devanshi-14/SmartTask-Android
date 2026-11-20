@@ -1,5 +1,6 @@
 package com.demo.smarttask.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.smarttask.data.Task
@@ -14,8 +15,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import android.util.Log
 import com.demo.smarttask.data.remote.TodoDto
+import com.demo.smarttask.taskreminder.TaskReminderScheduler
 
-class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
+class TaskViewModel(private val context: Context, private val repository: TaskRepository) : ViewModel() {
     // Remote Data
     // API Success State
     private val _apiSuccess = MutableStateFlow<TodoResponse?>(null)
@@ -93,13 +95,27 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
         dueDate: LocalDate?
     ) {
         viewModelScope.launch {
-            repository.addTask(title, description, priority, dueDate)
+           var taskId = repository.addTask(title, description, priority, dueDate)
+            if (taskId != null && dueDate != null) {
+                TaskReminderScheduler.scheduleReminder(
+                    context = context,
+                    taskId = taskId.toInt(),
+                    taskTitle = title,
+                    dueDate = dueDate
+                )
+            }
         }
     }
 
     fun updateTaskCompletion(id: Int, isCompleted: Boolean) {
         viewModelScope.launch {
             repository.updateTaskCompletion(id, isCompleted)
+            if (isCompleted) {
+                TaskReminderScheduler.cancelReminder(
+                    context.applicationContext,
+                    id
+                )
+            }
         }
     }
 
@@ -107,6 +123,19 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     fun updateTask(id: Int, updated: Task) {
         viewModelScope.launch {
             repository.updateTask(id, updated)
+            if (updated.isCompleted || updated.dueDate == null) {
+                TaskReminderScheduler.cancelReminder(
+                    context.applicationContext,
+                    id
+                )
+            } else {
+                TaskReminderScheduler.scheduleReminder(
+                    context = context.applicationContext,
+                    taskId = id,
+                    taskTitle = updated.title,
+                    dueDate = updated.dueDate
+                )
+            }
         }
     }
 
@@ -114,6 +143,10 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     fun deleteTask(id: Int) {
         viewModelScope.launch {
             repository.deleteTask(id)
+            TaskReminderScheduler.cancelReminder(
+                context.applicationContext,
+                id
+            )
         }
     }
 }

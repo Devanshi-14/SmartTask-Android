@@ -1,11 +1,13 @@
 
 package com.demo.smarttask.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.demo.smarttask.repository.TaskRepository
 
 class TaskViewModelFactory(
+    private val context: Context,
     private val repository: TaskRepository
 ) : ViewModelProvider.Factory {
 
@@ -14,7 +16,7 @@ class TaskViewModelFactory(
         modelClass: Class<T>
     ): T {
         if (modelClass.isAssignableFrom(TaskViewModel::class.java)) {
-            return TaskViewModel(repository) as T
+            return TaskViewModel(context,repository) as T
         }
 
         throw IllegalArgumentException(

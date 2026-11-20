@@ -38,6 +38,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.demo.smarttask.data.Task
 import com.demo.smarttask.data.TaskPriority
 import com.demo.smarttask.notification.NotificationHelper
+import com.demo.smarttask.taskreminder.TaskReminderScheduler
 import com.demo.smarttask.ui.components.SearchTab
 import com.demo.smarttask.ui.components.SmartTaskHeader
 import com.demo.smarttask.ui.components.TaskItem
@@ -122,9 +123,6 @@ fun DashBoardScreen(
             onSyncClicked = {
                 taskViewModel.fetchTodos()
                 taskViewModel.syncPendingTasks()
-            },
-            onNotificationClicked = {
-                NotificationHelper.showTestNotification(context)
             }
         )
 
