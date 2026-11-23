@@ -10,13 +10,13 @@ import com.demo.smarttask.data.remote.AddTodoRequest
 import com.demo.smarttask.data.remote.TodoDto
 import com.demo.smarttask.data.remote.TodoRemoteDataSource
 import com.demo.smarttask.data.remote.TodoResponse
-import com.demo.smarttask.data.remote.toTask
 import com.demo.smarttask.data.remote.toTaskEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import javax.inject.Inject
 
-class TaskRepository(
+class TaskRepository@Inject constructor(
     private val taskDao: TaskDao,
     private val taskRemoteDataSource: TodoRemoteDataSource
 ) {

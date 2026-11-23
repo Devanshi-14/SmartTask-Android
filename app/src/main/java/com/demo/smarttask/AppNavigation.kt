@@ -7,25 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.demo.smarttask.data.Task
-import com.demo.smarttask.data.local.DatabaseProvider
-import com.demo.smarttask.data.remote.RetrofitClient
-import com.demo.smarttask.data.remote.TodoRemoteDataSource
-import com.demo.smarttask.repository.TaskRepository
 import com.demo.smarttask.ui.screen.AddEditTaskScreen
 import com.demo.smarttask.ui.screen.DashBoardScreen
 import com.demo.smarttask.ui.screen.TaskDetailsScreen
 import com.demo.smarttask.viewmodel.TaskViewModel
-import com.demo.smarttask.viewmodel.TaskViewModelFactory
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.smarttask.notification.NotificationHelper
 
 @Composable
@@ -51,23 +45,7 @@ fun AppNavigation() {
         }
     }
 
-    val database = remember(context) {
-        DatabaseProvider.getDatabase(context)
-    }
-    val taskRemoteDataSource = remember {
-        TodoRemoteDataSource(RetrofitClient.todoApiService)
-    }
-    val repository = remember(database) {
-        TaskRepository(taskDao = database.taskDao(), taskRemoteDataSource = taskRemoteDataSource)
-    }
-
-    val factory = remember(repository) {
-        TaskViewModelFactory(repository)
-    }
-
-    val taskViewModel: TaskViewModel = viewModel(
-        factory = factory
-    )
+    val taskViewModel: TaskViewModel =  hiltViewModel()
 
     var selectedTask by remember {
         mutableStateOf<Task?>(null)
