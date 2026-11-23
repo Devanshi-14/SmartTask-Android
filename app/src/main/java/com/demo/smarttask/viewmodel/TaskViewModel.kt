@@ -14,8 +14,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import android.util.Log
 import com.demo.smarttask.data.remote.TodoDto
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
+@HiltViewModel
+class TaskViewModel @Inject constructor(private val repository: TaskRepository) : ViewModel() {
     // Remote Data
     // API Success State
     private val _apiSuccess = MutableStateFlow<TodoResponse?>(null)
